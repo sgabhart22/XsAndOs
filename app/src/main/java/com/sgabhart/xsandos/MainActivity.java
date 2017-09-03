@@ -1,15 +1,17 @@
 package com.sgabhart.xsandos;
 
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.content.DialogInterface;
 import android.graphics.Point;
 import android.graphics.Color;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.View;
 import android.view.Gravity;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.TextView;
-import android.util.Log;
 
 public class MainActivity extends AppCompatActivity {
     private Button[][] buttons;
@@ -75,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
             status.setBackgroundColor(Color.RED);
             enableButtons(false);
             status.setText(myGame.result());
+            showNewGameDialog();
         }
     } //update
 
@@ -85,6 +88,24 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     } // enableButtons
+
+    public void resetButtons() {
+        for (int row = 0; row < TicTacToe.SIDE; row++) {
+            for (int col = 0; col < TicTacToe.SIDE; col++) {
+                buttons[row][col].setText("");
+            }
+        }
+    } // resetButtons
+
+    public void showNewGameDialog() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle("This is fun :)");
+        alert.setMessage("Play again?");
+        PlayDialog playAgain = new PlayDialog();
+        alert.setPositiveButton("YES", playAgain);
+        alert.setNegativeButton("NO", playAgain);
+        alert.show();
+    } // showNewGameDialog
 
     private class ButtonHandler implements View.OnClickListener {
         @Override
@@ -97,4 +118,17 @@ public class MainActivity extends AppCompatActivity {
             }
         } // onCLick
     } // ButtonHandler
+
+    private class PlayDialog implements DialogInterface.OnClickListener {
+        @Override
+        public void onClick(DialogInterface dialog, int id){
+            if(id == -1){
+                myGame.resetGame();
+                enableButtons(true);
+                resetButtons();
+                status.setBackgroundColor(Color.GREEN);
+                status.setText(myGame.result());
+            } else if(id == -2) MainActivity.this.finish();
+        }
+    }
 }
