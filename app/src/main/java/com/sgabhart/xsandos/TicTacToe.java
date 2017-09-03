@@ -57,7 +57,7 @@ public class TicTacToe {
     protected int checkDiagonals() {
         if(game[0][0] != 0 && game[0][0] == game[1][1] && game[1][1] == game[2][2])
             return game[0][0];
-        if(game[0][2] != 0 && game[2][0] == game[1][1] && game[1][1] == game[2][0])
+        if(game[0][2] != 0 && game[0][2] == game[1][1] && game[1][1] == game[2][0])
             return game[2][0];
         return 0;
     } // checkDiagonals
@@ -86,4 +86,10 @@ public class TicTacToe {
 
         turn = 1;
     } // resetGame
+
+    public String result() {
+        if(whoWon() > 0) return "Player " + whoWon() + " wins";
+        else if (canNotPlay()) return "Tie game";
+        else return "PLAY!!";
+    }
 }

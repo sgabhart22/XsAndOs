@@ -3,14 +3,18 @@ package com.sgabhart.xsandos;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.graphics.Point;
+import android.graphics.Color;
 import android.view.View;
+import android.view.Gravity;
 import android.widget.Button;
 import android.widget.GridLayout;
+import android.widget.TextView;
 import android.util.Log;
 
 public class MainActivity extends AppCompatActivity {
     private Button[][] buttons;
     private TicTacToe myGame;
+    private TextView status;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         // Create layout manager
         GridLayout gl = new GridLayout(this);
         gl.setColumnCount(TicTacToe.SIDE);
-        gl.setRowCount(TicTacToe.SIDE);
+        gl.setRowCount(TicTacToe.SIDE + 1);
 
         // Create buttons, add to layout
         buttons = new Button[TicTacToe.SIDE][TicTacToe.SIDE];
@@ -42,6 +46,23 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        // Set layout parameters for 4th row
+        status = new TextView(this);
+        GridLayout.Spec rowSpec = GridLayout.spec(TicTacToe.SIDE, 1);
+        GridLayout.Spec colSpec = GridLayout.spec(0, TicTacToe.SIDE);
+        GridLayout.LayoutParams lpStatus = new GridLayout.LayoutParams(rowSpec, colSpec);
+        status.setLayoutParams(lpStatus);
+
+        // Set up status characteristics
+        status.setWidth(TicTacToe.SIDE * w);
+        status.setHeight(w);
+        status.setGravity(Gravity.CENTER);
+        status.setBackgroundColor(Color.GREEN);
+        status.setTextSize((int)(.15 * w));
+        status.setText(myGame.result());
+
+        gl.addView(status);
+
         // Set gl as contentView
         setContentView(gl);
     } // buildGuiByCode
@@ -50,7 +71,11 @@ public class MainActivity extends AppCompatActivity {
         int play = myGame.play(row, column);
         if(play == 1) buttons[row][column].setText("X");
         else if(play == 2) buttons[row][column].setText("O");
-        if(myGame.isGameOver()) enableButtons(false);
+        if(myGame.isGameOver()) {
+            status.setBackgroundColor(Color.RED);
+            enableButtons(false);
+            status.setText(myGame.result());
+        }
     } //update
 
     public void enableButtons(boolean enabled) {
