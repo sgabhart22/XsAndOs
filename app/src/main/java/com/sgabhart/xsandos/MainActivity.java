@@ -10,11 +10,12 @@ import android.util.Log;
 
 public class MainActivity extends AppCompatActivity {
     private Button[][] buttons;
+    private TicTacToe myGame;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // setContentView(R.layout.activity_main);
+        myGame = new TicTacToe();
         buildGuiByCode();
     }
 
@@ -46,11 +47,22 @@ public class MainActivity extends AppCompatActivity {
     } // buildGuiByCode
 
     public void update(int row, int column) {
-        Log.w("MainActivity", "Inside update: " + row + ", " + column);
-        buttons[row][column].setText("X");
+        int play = myGame.play(row, column);
+        if(play == 1) buttons[row][column].setText("X");
+        else if(play == 2) buttons[row][column].setText("O");
+        if(myGame.isGameOver()) enableButtons(false);
     } //update
 
+    public void enableButtons(boolean enabled) {
+        for (int row = 0; row < TicTacToe.SIDE; row++) {
+            for (int col = 0; col < TicTacToe.SIDE; col++) {
+                buttons[row][col].setEnabled(enabled);
+            }
+        }
+    } // enableButtons
+
     private class ButtonHandler implements View.OnClickListener {
+        @Override
         public void onClick(View v) {
             Log.w("MainActivity", "Inside onClck, v = " + v);
             for (int row = 0; row < TicTacToe.SIDE; row++) {
